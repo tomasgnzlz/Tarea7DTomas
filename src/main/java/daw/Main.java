@@ -10,6 +10,11 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -17,7 +22,7 @@ import javax.xml.bind.Marshaller;
  */
 public class Main {
 
-    public static void main(String[] args) throws JAXBException {
+    public static void main(String[] args) throws JAXBException, IOException {
         // A
         List<App> listaApps = new ArrayList<>();
         listaApps = listaAplicaciones();
@@ -26,7 +31,7 @@ public class Main {
         // B
         System.out.println("\n\n");
         List<String> listaString = new ArrayList<>();
-        listaString = listaString(listaApps);
+        listaString = listaStringComas(listaApps);
         // creo el directorio ./appscsv y dentro guardo la lista de Apps
         String rutaDirectorio = "./appscsv";
         SistemasFicheros.crearDirectorio(rutaDirectorio);
@@ -66,13 +71,30 @@ public class Main {
         // Volcado al fichero xml
         serializador.marshal(catalogo, new File("catalogo.xml"));
         // E (Se hace en clase el jueves)
+        
+        rutaDirectorio = "./appsjson”";
+        SistemasFicheros.crearDirectorio(rutaDirectorio);
+        ObjectMapper mapeador = new ObjectMapper();
+
+        // Formato JSON bien formateado. Si se comenta, el fichero queda minificado
+        mapeador.configure(SerializationFeature.INDENT_OUTPUT, true);
+
+        // Escribe en un fichero JSON el catálogo de muebles
+        mapeador.writeValue(new File(rutaDirectorio + "/catalogoApps.json"), listaApps);
+
         // F
         rutaDirectorio = "./copias";
         SistemasFicheros.crearDirectorio(rutaDirectorio);
         SistemasFicheros.copiarFicheros("./appscsv/aplicacionestxt.csv", rutaDirectorio + "/copiasFicheroApplicaciones.csv");
 
         // G
-        // no es lo mismo que hago en directorio de appscsv??????
+        // Es igual que el 2do pero con ; y no con comas
+        rutaDirectorio = "./aplicaciones";
+        List<String> listaString2 = new ArrayList<>();
+        listaString2 = listaStringPuntoComas(listaApps);
+        SistemasFicheros.crearDirectorio(rutaDirectorio);
+        LecturaEscritura.escribirFicheroListas(rutaDirectorio + "/aplicacionesComas.csv", listaString2);
+
     }
 
     // Método que crea 50 aplicaciones usando el constructor por defecto
@@ -86,10 +108,19 @@ public class Main {
     }
 
     // Método que pasa de una lista de APPS a una lista de String
-    public static List<String> listaString(List<App> listaAux) {
+    public static List<String> listaStringComas(List<App> listaAux) {
         List<String> listaString = new ArrayList<>();
         for (App app : listaAux) {
             listaString.add(app.toString());
+        }
+        return listaString;
+    }
+
+    // Método que pasa de una lista de APPS a una lista de String
+    public static List<String> listaStringPuntoComas(List<App> listaAux) {
+        List<String> listaString = new ArrayList<>();
+        for (App app : listaAux) {
+            listaString.add(app.toString2());
         }
         return listaString;
     }
@@ -101,4 +132,5 @@ public class Main {
             LecturaEscritura.escribirFicheroSencillo(rutaFichero + "/" + appAux.getNombre() + ".csv", appAux.toString());
         }
     }
+
 }

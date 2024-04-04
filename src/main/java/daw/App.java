@@ -81,6 +81,10 @@ public class App {
     // toString
     @Override
     public String toString() {
+        return codigo + "," + nombre + "," + descripcion + "," + tamanioKB + "," + numDescargas;
+    }
+    
+    public String toString2() {
         return codigo + ";" + nombre + ";" + descripcion + ";" + tamanioKB + ";" + numDescargas;
     }
 
