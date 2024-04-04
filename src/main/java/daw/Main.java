@@ -81,6 +81,8 @@ public class Main {
 
         // Escribe en un fichero JSON el catálogo de muebles
         mapeador.writeValue(new File(rutaDirectorio + "/catalogoApps.json"), listaApps);
+        App apAux = new App();
+        mapeador.writeValue(new File(rutaDirectorio + "/catalogoUnico.json"), apAux);
 
         // F
         rutaDirectorio = "./copias";
